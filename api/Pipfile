@@ -25,13 +25,13 @@ rsa = { version = "==3.4.2", name = "pypi"}
 s3transfer = { version = "==0.2.0", name = "pypi"}
 six = { version = "==1.12.0", name = "pypi"}
 sqlparse = { version = "==0.3.0", name = "pypi"}
-urllib3 = { version = "==1.24.3", name = "pypi"}
-whitenoise = { version = "==4.1.3", name = "pypi"}
+urllib3 = { version = "==1.24.3", name = "pyp80pi"}
 pillow = { version = "==6.1.0", name = "pypi"}
 setuptools = { version = "==41.6.0", name = "pypi"}
 rxpy = { version = "==0.1.0", name = "pypi"}
 coverage = { version = "==4.5.4", name = "pypi"}
 django-rest-swagger = { version = "==2.2.0", name = "pypi"}
+
 
 [requires]
 python_version = "3.6"
