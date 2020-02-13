@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:8000",
   "dependencies": {
+    "antd": "^3.26.9",
     "axios": "^0.17.1",
     "babel-cli": "^6.26.0",
     "body-parser": "^1.18.2",
@@ -17,13 +18,15 @@
     "react-modal": "^3.1.11",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.0",
-    "styled-components": "^2.4.0"
+    "styled-components": "^2.4.0",
+    "webpack": "^3.10.0"
   },
   "scripts": {
     "webpack": "webpack",
     "start": "npm run webpack && nodemon --exec babel-node -- bin/www"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "webpack-cli": "^3.3.11"
   }
 }

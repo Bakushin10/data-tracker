@@ -28,7 +28,7 @@ export default class App extends React.Component {
     return (
       <div>
         <Add selectedMonth={this.state.selectedMonth} selectedYear={this.state.selectedYear} />
-        <table>
+        {/* <table>
           <thead>
             <tr>
               <th></th>
@@ -55,7 +55,7 @@ export default class App extends React.Component {
               })
             }
           </tbody>
-        </table>
+        </table> */}
       </div>
     );
   }

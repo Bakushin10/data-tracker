@@ -285,9 +285,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 		module.exports = classNames;
 	} else if (true) {
 		// register as 'classnames', consistent with npm package name
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
 			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	} else {
 		window.classNames = classNames;
@@ -28396,81 +28396,7 @@ var App = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_Add2.default, { selectedMonth: this.state.selectedMonth, selectedYear: this.state.selectedYear }),
-        _react2.default.createElement(
-          'table',
-          null,
-          _react2.default.createElement(
-            'thead',
-            null,
-            _react2.default.createElement(
-              'tr',
-              null,
-              _react2.default.createElement('th', null),
-              _react2.default.createElement(
-                'th',
-                { className: 'desc-col' },
-                'Prof'
-              ),
-              _react2.default.createElement(
-                'th',
-                { className: 'button-col' },
-                'Course'
-              ),
-              _react2.default.createElement(
-                'th',
-                { className: 'button-col' },
-                'Major'
-              ),
-              _react2.default.createElement(
-                'th',
-                { className: 'button-col' },
-                'Month'
-              ),
-              _react2.default.createElement(
-                'th',
-                { className: 'button-col' },
-                'Year'
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'tbody',
-            null,
-            this.state.data.map(function (exp) {
-              return _react2.default.createElement(
-                'tr',
-                null,
-                _react2.default.createElement('td', { className: 'counterCell' }),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'desc-col' },
-                  exp.profName
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'button-col' },
-                  exp.course
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'button-col' },
-                  exp.major
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'button-col' },
-                  exp.month
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'button-col' },
-                  exp.year
-                )
-              );
-            })
-          )
-        )
+        _react2.default.createElement(_Add2.default, { selectedMonth: this.state.selectedMonth, selectedYear: this.state.selectedYear })
       );
     }
   }]);
@@ -29411,6 +29337,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); } //client/components/Add.js
 
 
+//import { Menu, Dropdown, Button } from 'antd';
 var querystring = __webpack_require__(386);
 
 var WarningOn = _styledComponents2.default.p(_templateObject);
@@ -29425,17 +29352,20 @@ var Add = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Add.__proto__ || Object.getPrototypeOf(Add)).call(this));
 
         _this.state = {
-            profName: '',
+            stockName: '',
             course: '',
             major: '',
             year: '',
-            messageFromServer: ''
+            messageFromServer: '',
+            selectedStock: '',
+            data: []
         };
         _this.handleSelectChange = _this.handleSelectChange.bind(_this);
         _this.onClick = _this.onClick.bind(_this);
         _this.onClickGetAPI = _this.onClickGetAPI(_this);
         _this.handleTextChange = _this.handleTextChange.bind(_this);
         _this.insertNewExpense = _this.insertNewExpense.bind(_this);
+        _this.changeStock = _this.changeStock.bind(_this);
         return _this;
     }
 
@@ -29478,7 +29408,7 @@ var Add = function (_React$Component) {
         key: 'insertNewExpense',
         value: function insertNewExpense(e) {
             _axios2.default.post('/insert', querystring.stringify({
-                profName: e.state.profName,
+                stockName: e.state.stockName,
                 course: e.state.course,
                 major: e.state.major,
                 month: e.state.month,
@@ -29498,35 +29428,78 @@ var Add = function (_React$Component) {
         value: function getAPI(e) {
             console.log(e.target.value);
             console.log("clicked");
-            var headers = {
-                'Content-Type': 'application/json',
-                "Access-Control-Allow-Origin": "http://localhost:8000",
-                'Access-Control-Allow-Credentials': true
-                // "Access-Control-Allow-Methods": "GET,OPTIONS,POST,PUT",
-                // "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-
-                //axios.defaults.withCredentials = true;
-            };_axios2.default.get('http://localhost:8000/api', {
-                withCredentials: true,
-                headers: headers
-            }).then(function (response) {
-                console.log("/api");
-                console.log(response.data);
+            fetch('http://localhost:8000/data/', {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                body: JSON.stringify({ company: "this.state.selectedStock" })
+            }).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                console.log(res);
+                console.log(JSON.stringify(res));
+            }).catch(function (err) {
+                console.log(err);
             });
         }
     }, {
         key: 'handleTextChange',
         value: function handleTextChange(e) {
             console.log(e.target.value);
-            if (e.target.name == "profName") this.setState({ profName: e.target.value });
+            if (e.target.name == "stockName") this.setState({ stockName: e.target.value });
 
             if (e.target.name == "course") this.setState({ course: e.target.value });
 
             if (e.target.name == "major") this.setState({ major: e.target.value });
         }
     }, {
+        key: 'changeStock',
+        value: function changeStock(e, stock) {
+            console.log(stock);
+            this.setState({ selectedStock: stock });
+        }
+    }, {
         key: 'render',
         value: function render() {
+
+            // const menu = (
+            //     <Menu>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'AAPL')} align="center">
+            //           Apple
+            //         </div>
+            //       </Menu.Item>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'FB')} align="center">
+            //           Facebook
+            //         </div>
+            //       </Menu.Item>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'BAC')} align="center">
+            //           Bank of America
+            //         </div>
+            //       </Menu.Item>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'MSFT')} align="center">
+            //           Microsoft
+            //         </div>
+            //       </Menu.Item>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'AMZN')} align="center">
+            //           Amazon
+            //         </div>
+            //       </Menu.Item>
+            //       <Menu.Item>
+            //         <div onClick={e => this.changeStock(e, 'T')} align="center">
+            //         AT&T
+            //         </div>
+            //       </Menu.Item>
+            //     </Menu>
+            //   );
 
             var profWarning = void 0,
                 courseWarning = void 0,
@@ -29534,15 +29507,15 @@ var Add = function (_React$Component) {
                 allFieldEntered = void 0;
             var submitButton = void 0,
                 getAPIButton = void 0;
-            var checkListForWarning = [this.state.profName, this.state.course, this.state.major];
+            var checkListForWarning = [this.state.stockName, this.state.course, this.state.major];
             var allFieldChecked = !checkListForWarning.includes('');
             getAPIButton = _react2.default.createElement(
                 _reactBootstrap.Button,
-                { bsStyle: 'success', bsSize: 'small', onClick: this.getAPI },
+                { bsStyle: 'success', bssize: 'small', onClick: this.getAPI },
                 'get API'
             );
 
-            if (this.state.profName) {
+            if (this.state.stockName) {
                 profWarning = _react2.default.createElement(
                     WarningOff,
                     null,
@@ -29603,29 +29576,22 @@ var Add = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { className: 'button-center' },
+                getAPIButton,
                 _react2.default.createElement(
                     'div',
                     null,
                     profWarning,
-                    _react2.default.createElement('input', { ref: this.state.profName.value, onChange: this.handleTextChange,
-                        type: 'text', name: 'profName', value: this.state.profName, placeholder: 'prof name ' })
+                    _react2.default.createElement('input', { ref: this.state.stockName.value, onChange: this.handleTextChange,
+                        type: 'text', name: 'stockName', value: this.state.stockName, placeholder: 'prof name ' })
                 ),
+                _react2.default.createElement('div', null),
                 _react2.default.createElement(
                     'div',
                     null,
                     courseWarning,
                     _react2.default.createElement('input', { ref: this.state.course.value, onChange: this.handleTextChange,
                         type: 'text', name: 'course', value: this.state.course, placeholder: 'course ' })
-                ),
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    majorWarning,
-                    _react2.default.createElement('input', { ref: this.state.major.value, onChange: this.handleTextChange,
-                        type: 'text', name: 'major', value: this.state.major, placeholder: 'major ' })
-                ),
-                submitButton,
-                getAPIButton
+                )
             );
             //}
         }
@@ -42920,9 +42886,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	};
 
 	if (true) {
-		!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
 			return ExecutionEnvironment;
-		}.call(exports, __webpack_require__, exports, module),
+		}).call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	} else if (typeof module !== 'undefined' && module.exports) {
 		module.exports = ExecutionEnvironment;

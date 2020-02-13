@@ -28,9 +28,14 @@ sqlparse = { version = "==0.3.0", name = "pypi"}
 urllib3 = { version = "==1.24.3", name = "pyp80pi"}
 pillow = { version = "==6.1.0", name = "pypi"}
 setuptools = { version = "==41.6.0", name = "pypi"}
-rxpy = { version = "==0.1.0", name = "pypi"}
 coverage = { version = "==4.5.4", name = "pypi"}
 django-rest-swagger = { version = "==2.2.0", name = "pypi"}
+
+pandas = { version = "==1.0.1", name = "pypi"}
+pandas-datareader = { version = "==0.8.1", name = "pypi"}
+matplotlib = { version = "==3.2.0rc1", name = "pypi"}
+beautifulsoup4 = { version = "==4.8.2", name = "pypi"}
+scikit-learn = { version = "*", name = "pypi"}
 
 
 [requires]
@@ -45,3 +50,4 @@ build = "python setup.py bdist_wheel"
 createuser = "python manage.py createsuperuser"
 test = "coverage run manage.py test"
 report = "coverage report -m"
+createapp = "python manage.py startapp polls"
