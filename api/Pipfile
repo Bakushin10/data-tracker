@@ -31,11 +31,14 @@ setuptools = { version = "==41.6.0", name = "pypi"}
 coverage = { version = "==4.5.4", name = "pypi"}
 django-rest-swagger = { version = "==2.2.0", name = "pypi"}
 
+# data analysis related
 pandas = { version = "==1.0.1", name = "pypi"}
 pandas-datareader = { version = "==0.8.1", name = "pypi"}
-matplotlib = { version = "==3.2.0rc1", name = "pypi"}
+matplotlib = { version = "*", name = "pypi"}
 beautifulsoup4 = { version = "==4.8.2", name = "pypi"}
 scikit-learn = { version = "*", name = "pypi"}
+seaborn = { version = "==0.10.0", name = "pypi"}
+pandasql = { version = "==0.7.3", name = "pypi"}
 
 
 [requires]

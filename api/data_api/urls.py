@@ -1,8 +1,9 @@
 # todos/urls.py
 from django.urls import path
 
-from .views import Data_Api
+from .views import DataApi, SaveCommand
 
 urlpatterns = [
-    path('', Data_Api.as_view()),
+    path('', DataApi.as_view()),
+    path('save', SaveCommand.as_view()),
 ]
