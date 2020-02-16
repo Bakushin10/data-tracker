@@ -8,6 +8,9 @@ module.exports = {
   path: path.join(__dirname, 'client'),
   filename: 'bundle.js'
  },
+ resolve: {
+    extensions: ['.js', '.jsx']
+ },
  module: {
   loaders: [{
    test: /.jsx?$/,
