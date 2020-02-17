@@ -267,13 +267,15 @@ export default class ShowImage extends React.Component {
                     </Row> */}
                     <Row>
                         <Col span={1}></Col>
-                        select companies to see the stock
-                        {this.selectCompanies()}
+                        <Col span={10}>
+                            select companies to see the stock
+                            {this.selectCompanies()}
+                        </Col>
                     </Row>
                     <div style={{ margin: '24px 0' }} />
                     <Row>
                         <Col span={1}></Col>
-                        <Col span={7}>
+                        <Col span={10}>
                             nickname 
                             <TextArea
                                 type="text"
