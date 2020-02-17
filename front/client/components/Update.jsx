@@ -1,7 +1,8 @@
 import React from 'react';
-import { Menu, Dropdown, Button, Input, InputNumber, Card} from 'antd';
+import { Menu, Dropdown, Button, Input, InputNumber, Card, Col, Row, List, Select} from 'antd';
 const { TextArea } = Input;
 import 'antd/dist/antd.css';
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default class ShowImage extends React.Component {
 
@@ -14,7 +15,8 @@ export default class ShowImage extends React.Component {
             period : 10,
             response : [],
             commandNickname : "",
-            favoriteCommandList : []
+            favoriteCommandList : [],
+            companies : [],
         }
 
         this.selectCompany = this.selectCompany.bind(this);
@@ -26,6 +28,9 @@ export default class ShowImage extends React.Component {
         this.onChanegPeriod = this.onChanegPeriod.bind(this);
         this.getFavoriteCommands = this.getFavoriteCommands.bind(this);
         this.onClickSelectCommand = this.onClickSelectCommand.bind(this);
+        this.getFavoriteCommandsList = this.getFavoriteCommandsList.bind(this);
+        this.selectCompanies = this.selectCompanies.bind(this);
+        this.onChangeSelectCompanies = this.onChangeSelectCompanies.bind(this);
     }
 
     selectCompany(e, stockSource) {
@@ -51,25 +56,90 @@ export default class ShowImage extends React.Component {
         this.setState({sql : command.sql})
         this.setState({period : command.previous_period})
     }
+    
+    onChangeSelectCompanies(value){
+        this.setState({companies : value})
+        console.log(this.state.companies);
+    }
+    
+    selectCompanies(){
+        return(
+          <Select 
+            mode="multiple" 
+            placeholder="select the company"
+            onChange={this.onChangeSelectCompanies}
+            style={{ width: 160 }}
+          >
+            <Select.Option value="AAPL">Apple</Select.Option>
+            <Select.Option value="FB">Facebook</Select.Option>
+            <Select.Option value="BAC">Bank of America</Select.Option>
+            <Select.Option value="MSFT">Micro soft</Select.Option>
+            <Select.Option value="AMZN">Amazon</Select.Option>
+            <Select.Option value="T">AT&T</Select.Option>
+            <Select.Option value="TSLA">TESLA</Select.Option>
+          </Select>
+        )
+      }
 
-    getFavoriteCommands(res){
+    getFavoriteCommands(){
         return(
             <div>{
                 this.state.favoriteCommandList.map( command =>(
-                    <Card
-                        title= {command.name}
-                        style={{ width: 300 }}
-                        onClick={e => this.onClickSelectCommand(e, command)}
-                    >
-                        <p>sql : {command.sql} </p>
-                        <p>company : {command.company}</p>
-                        <p>previous period : {command.previous_period} </p>
-                    </Card>
+                    <Row type="flex">
+                    <Col span={1}></Col>
+                    <Col>
+                        <Card
+                            title= {command.name}
+                            style={{ width: 300 }}
+                            onClick={e => this.onClickSelectCommand(e, command)}
+                        >
+                            <p>sql : {command.sql} </p>
+                            <p>company : {command.company}</p>
+                            <p>previous period : {command.previous_period} </p>
+                        </Card>
+                    </Col>
+                </Row>
                 ))
                 }
             </div>
         )
+    }
 
+    getFavoriteCommandsList(){
+        return(
+            <div>{
+                // <InfiniteScroll
+                //     initialLoad={false}
+                //     pageStart={0}
+                //     loadMore={true}
+                //     //hasMore={!this.state.loading && this.state.hasMore}
+                //     useWindow={false}
+                // >
+                    <List
+                        dataSource={this.state.favoriteCommandList}
+                        renderItem={item => (
+                            <Row type="flex">
+                                <Col span={1}></Col>
+                                <Col span={9}>
+                                    <List.Item key={ item.id }>
+                                    <List.Item.Meta
+                                        title={ item.name }
+                                        description={ item.sql }
+                                        onClick={e => this.onClickSelectCommand(e, item)}
+                                    />
+                                        <div>
+                                            <p>company : { item.company }</p>
+                                            <p>previous period : { item.previous_period } </p>
+                                        </div>
+                                    </List.Item>
+                                </Col>
+                            </Row>
+                          )}
+                    >
+                    </List>
+                // </InfiniteScroll>
+                }</div>
+        )
     }
 
     componentDidMount(){
@@ -83,7 +153,7 @@ export default class ShowImage extends React.Component {
             },
         }).then(res => res.json()).then(res => {
             this.setState({favoriteCommandList : res})
-            this.getFavoriteCommands()
+            //this.getFavoriteCommands()
         }).catch(err => {
             console.log("data not fetched!");
             console.log(err);
@@ -102,7 +172,7 @@ export default class ShowImage extends React.Component {
            body: JSON.stringify(
                {
                    name : this.state.commandNickname,
-                   company: this.state.selectedCompany,
+                   company: this.state.companies,
                    sql : this.state.sql,
                    previous_period : this.state.period
                 }
@@ -131,7 +201,7 @@ export default class ShowImage extends React.Component {
             },
            body: JSON.stringify(
                {
-                   company: this.state.selectedCompany,
+                   company: this.state.companies,
                    sql : this.state.sql,
                    period : this.state.period
                 }
@@ -189,56 +259,105 @@ export default class ShowImage extends React.Component {
         return(
             <div>
                 <div>
-                    <Dropdown overlay = {menu} title="Data Source">
-                        <Button> select company </Button>
-                    </Dropdown>
-                    <Button type="primary" onClick={this.postSaveCommnad}>save the command</Button>
-                    <div>
-                        <div>
-                            nickname : 
+                    {/* <Row>
+                        <Col span={1}></Col>
+                        <Dropdown overlay = {menu} title="Data Source">
+                            <Button> select  </Button>
+                        </Dropdown>
+                    </Row> */}
+                    <Row>
+                        <Col span={1}></Col>
+                        select companies to see the stock
+                        {this.selectCompanies()}
+                    </Row>
+                    <div style={{ margin: '24px 0' }} />
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={7}>
+                            nickname 
                             <TextArea
                                 type="text"
                                 value={this.state.commandNickname}
                                 placeholder="Enter Reply"
-                                autoSize={{ minRows: 3, maxRows: 5 }}
+                                autoSize={{ minRows: 1, maxRows: 1 }}
                                 onChange={this.onChangeNickName}
                             />
-                        </div>
-                    </div>
-                </div>
-                <div>previous day :
-                    <InputNumber min={1} max={10000} defaultValue={10} onChange={this.onChanegPeriod} />
-                </div>
-                <div>
-                    sql : 
-                    <TextArea
-                        type="text"
-                        value={this.state.sql}
-                        placeholder="Enter sql to execute"
-                        autoSize={{ minRows: 3, maxRows: 5 }}
-                        onChange={this.onChangeTextArea}
-                    />
-                </div>
+                        </Col>
+                    </Row>
+                    
+                    <div style={{ margin: '24px 0' }} />
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={4}>
+                        previous day
+                        <InputNumber min={1} max={10000} defaultValue={10} onChange={this.onChanegPeriod} />
+                        </Col>
+                    </Row>
+
+                    <div style={{ margin: '24px 0' }} />
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col span={10}>
+                        sql
+                        <TextArea
+                            type="text"
+                            value={this.state.sql}
+                            placeholder="Enter sql to execute"
+                            autoSize={{ minRows: 5, maxRows: 6}}
+                            onChange={this.onChangeTextArea}
+                        />
+                        </Col>
+                    </Row>
                 
-                <div>
-                    { this.state.name }
-                </div>
-                <div>
-                    { this.state.selectedCompany }
-                </div>
-                <div>
-                    { this.state.sql }
-                </div>
-                <div>
-                    { this.state.period }
-                </div>
-                <div>
-                    <Button type="primary" onClick={this.postToRetrieveStockInfo} >submit</Button>
-                </div>
-                <div>
+                <div style={{ margin: '24px 0' }} />
+                <Row>
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col>
+                            nickname : { this.state.name }
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col>
+                            company : { this.state.companies }
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col>
+                            sql : { this.state.sql }
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col>
+                        period : { this.state.period }
+                        </Col>
+                    </Row>
+                </Row>
+
+                <div style={{ margin: '24px 0' }} />
+                <Row>
+                    <Col span={1}></Col>
+                    <Col span={2}>
+                        <Button type="primary" onClick={this.postToRetrieveStockInfo} >submit</Button>
+                    </Col>
+                    <Col span={1}></Col>
+                    <Col span={2}>
+                        <Button type="primary" onClick={this.postSaveCommnad}>save the command</Button>
+                    </Col>
+                </Row>
+
+                <div style={{ margin: '24px 0' }} />
+                {/* <div>
                     {  this.getFavoriteCommands()}
+                </div> */}
+                <div>
+                    {  this.getFavoriteCommandsList()}
                 </div>
             </div>
+        </div>
         )
     }
 }
