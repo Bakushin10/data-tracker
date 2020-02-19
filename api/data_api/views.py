@@ -38,21 +38,41 @@ class DataApi(APIView):
         except:
             return Response(data = MESSAGES.FAIL_DATA_NOT_FETCHED, status=status.HTTP_400_BAD_REQUEST)
 
+
+    def add_new_row(self, df, items):
+        new_rows = CONST.ROWS
+        for i in range(len(new_rows)):
+            df[new_rows[i]] = items[i]
+        return df
+
+    def get_df(self, data):
+
+        dfs = []
+        for company in data.get("company"):
+            df = web.DataReader(
+                company,
+                data_source = data.get("data_source"),
+                start = data.get("start"),
+                end = data.get("end")
+            )
+            items = [company]
+            self.add_new_row(df, items)
+            dfs.append(df)
+        df = pd.concat(dfs)
+        print(df.head())
+        return df
+
+
     def get_stock_data(self, request):
         style.use('ggplot')
         data = self.stock_info_adaptor(request)
         print(data)
 
         sql = data.get("sql")
-        df = web.DataReader(
-                data.get("company"),
-                data_source = data.get("data_source"),
-                start = data.get("start"),
-                end = data.get("end")
-            )
+        df = self.get_df(data)
         print("*** original ***")
         print(df.head(10))
-        filename = str(dt.datetime.now(JST)) + "_" + data.get("company")
+        filename = str(dt.datetime.now(JST))
         #df.to_csv(PATH_TO_CSV + filename)
         
         # q = """
@@ -70,7 +90,7 @@ class DataApi(APIView):
     
     def stock_data_result_adaptor(self, status = status, data = "", message = ""):
         """
-            adapt
+            adapt return value to front
         """
         return{
             "data" : data,

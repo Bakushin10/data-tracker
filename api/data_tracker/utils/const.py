@@ -3,6 +3,7 @@ class CONST:
 
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"
+    ROWS = ["company"]
 
 
 class MESSAGES:
