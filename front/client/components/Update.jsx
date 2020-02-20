@@ -26,7 +26,7 @@ export default class ShowImage extends React.Component {
         this.postToRetrieveStockInfo = this.postToRetrieveStockInfo.bind(this);
         this.postSaveCommnad = this.postSaveCommnad.bind(this);
         this.onChanegPeriod = this.onChanegPeriod.bind(this);
-        this.getFavoriteCommands = this.getFavoriteCommands.bind(this);
+        //this.getFavoriteCommands = this.getFavoriteCommands.bind(this);
         this.onClickSelectCommand = this.onClickSelectCommand.bind(this);
         this.getFavoriteCommandsList = this.getFavoriteCommandsList.bind(this);
         this.selectCompanies = this.selectCompanies.bind(this);
@@ -51,10 +51,12 @@ export default class ShowImage extends React.Component {
     }
 
     onClickSelectCommand(e, command){
+        console.log(command.company)
         this.setState({name : command.name})
-        this.setState({selectedCompany : command.company})
+        this.setState({selectedCompany : null})
         this.setState({sql : command.sql})
         this.setState({period : command.previous_period})
+        this.setState({companies : command.company})
     }
     
     onChangeSelectCompanies(value){
@@ -73,7 +75,7 @@ export default class ShowImage extends React.Component {
             <Select.Option value="AAPL">Apple</Select.Option>
             <Select.Option value="FB">Facebook</Select.Option>
             <Select.Option value="BAC">Bank of America</Select.Option>
-            <Select.Option value="MSFT">Micro soft</Select.Option>
+            <Select.Option value="MSFT">Microsoft</Select.Option>
             <Select.Option value="AMZN">Amazon</Select.Option>
             <Select.Option value="T">AT&T</Select.Option>
             <Select.Option value="TSLA">TESLA</Select.Option>
@@ -81,64 +83,57 @@ export default class ShowImage extends React.Component {
         )
       }
 
-    getFavoriteCommands(){
-        return(
-            <div>{
-                this.state.favoriteCommandList.map( command =>(
-                    <Row type="flex">
-                    <Col span={1}></Col>
-                    <Col>
-                        <Card
-                            title= {command.name}
-                            style={{ width: 300 }}
-                            onClick={e => this.onClickSelectCommand(e, command)}
-                        >
-                            <p>sql : {command.sql} </p>
-                            <p>company : {command.company}</p>
-                            <p>previous period : {command.previous_period} </p>
-                        </Card>
-                    </Col>
-                </Row>
-                ))
-                }
-            </div>
-        )
-    }
+    // getFavoriteCommands(){
+    //     return(
+    //         <div>{
+    //             this.state.favoriteCommandList.map( command =>(
+    //                 <Row type="flex">
+    //                 <Col span={1}></Col>
+    //                 <Col>
+    //                     <Card
+    //                         title= {command.name}
+    //                         style={{ width: 300 }}
+    //                         onClick={e => this.onClickSelectCommand(e, command)}
+    //                     >
+    //                         <p>sql : {command.sql} </p>
+    //                         <p>company : {command.company}</p>
+    //                         <p>previous period : {command.previous_period} </p>
+    //                     </Card>
+    //                 </Col>
+    //             </Row>
+    //             ))
+    //             }
+    //         </div>
+    //     )
+    // }
 
     getFavoriteCommandsList(){
         return(
             <div>{
-                // <InfiniteScroll
-                //     initialLoad={false}
-                //     pageStart={0}
-                //     loadMore={true}
-                //     //hasMore={!this.state.loading && this.state.hasMore}
-                //     useWindow={false}
-                // >
-                    <List
-                        dataSource={this.state.favoriteCommandList}
-                        renderItem={item => (
-                            <Row type="flex">
-                                <Col span={1}></Col>
-                                <Col span={9}>
-                                    <List.Item key={ item.id }>
-                                    <List.Item.Meta
-                                        title={ item.name }
-                                        description={ item.sql }
-                                        onClick={e => this.onClickSelectCommand(e, item)}
-                                    />
-                                        <div>
-                                            <p>company : { item.company }</p>
-                                            <p>previous period : { item.previous_period } </p>
-                                        </div>
-                                    </List.Item>
-                                </Col>
-                            </Row>
-                          )}
-                    >
-                    </List>
-                // </InfiniteScroll>
-                }</div>
+                <List
+                    dataSource={this.state.favoriteCommandList}
+                    renderItem={item => (
+                        <Row type="flex">
+                            <Col span={1}></Col>
+                            <Col span={9}>
+                                <List.Item key={ item.id }>
+                                <List.Item.Meta
+                                    title={ item.name }
+                                    description={ item.sql }
+                                    onClick={e => this.onClickSelectCommand(e, item)}
+                                />
+                                    <div>
+                                        <p>company : { item.company }</p>
+                                        <p>previous period : { item.previous_period } </p>
+                                    </div>
+                                </List.Item>
+                            </Col>
+                        </Row>
+                        )}
+                >
+                </List>
+                }
+            </div>
         )
     }
 
