@@ -7,6 +7,7 @@ import pytz
 
 from .serializers import SaveFavoriteCommandSerializer
 from .models import FavoriteCommand
+from .adaptors import *
 
 # data
 import datetime as dt
@@ -17,6 +18,7 @@ import pandas_datareader.data as web
 import seaborn as sns
 from pandasql import sqldf
 from data_tracker.utils.const import CONST, MESSAGES
+
 
 JST = dt.timezone(dt.timedelta(hours=+9), 'JST')
 PATH_TO_CSV = CONST.PATH_TO_CSV
@@ -34,6 +36,12 @@ class DataApi(APIView):
         try:
             data = FavoriteCommand.objects.all()
             serializer = SaveFavoriteCommandSerializer(data, many=True)
+
+            print(serializer.data)
+            for data in serializer.data:
+                company = data.get("company")
+                data["company"] = company.replace("[", "").replace("]", "").replace("'", "").split(", ")
+
             return Response(data = serializer.data)
         except:
             return Response(data = MESSAGES.FAIL_DATA_NOT_FETCHED, status=status.HTTP_400_BAD_REQUEST)
@@ -65,7 +73,7 @@ class DataApi(APIView):
 
     def get_stock_data(self, request):
         style.use('ggplot')
-        data = self.stock_info_adaptor(request)
+        data = stock_info_adaptor(request)
         print(data)
 
         sql = data.get("sql")
@@ -73,7 +81,7 @@ class DataApi(APIView):
         print("*** original ***")
         print(df.head(10))
         filename = str(dt.datetime.now(JST))
-        #df.to_csv(PATH_TO_CSV + filename)
+        df.to_csv(PATH_TO_CSV + filename)
         
         # q = """
         #     SELECT *
@@ -84,40 +92,20 @@ class DataApi(APIView):
             sdf = sqldf(sql, locals())
             print("*** after sql ***")
             print(sdf)
-            return self.stock_data_result_adaptor(status = CONST.SUCCESS, data = sdf.head(10))
+            return stock_data_result_adaptor(status = CONST.SUCCESS, data = sdf.head(10))
         except:
-            return self.stock_data_result_adaptor(status = CONST.FAIL, message = MESSAGES.SQL_ERROR)
+            return stock_data_result_adaptor(status = CONST.FAIL, message = MESSAGES.SQL_ERROR)
     
-    def stock_data_result_adaptor(self, status = status, data = "", message = ""):
-        """
-            adapt return value to front
-        """
-        return{
-            "data" : data,
-            "status" : status,
-            "message" : message
-        }
-    
-    def stock_info_adaptor(self, request):
-        """
-            adapt the input from front-end to backend
-        """
-        today = dt.date.today()
-        previous = request.data.get("period", 10)
-        return {
-            'data_source' : "yahoo",
-            'company' : request.data.get("company"),
-            'sql' : request.data.get("sql"),
-            'start' : today - dt.timedelta(previous),
-            'end' : today
-        }
 
 class SaveCommand(APIView):
 
     def post(self, request):
         print(request.data)
-        serializer = SaveFavoriteCommandSerializer(data = request.data)
+        data = input_adaptor(request.data)
+        serializer = SaveFavoriteCommandSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
             return Response(data = MESSAGES.SUCCESS_DATA_SAVED, status=status.HTTP_200_OK)
         return Response(data = MESSAGES.FAIL_DATA_NOT_SAVED, status=status.HTTP_400_BAD_REQUEST)
+    
+    
