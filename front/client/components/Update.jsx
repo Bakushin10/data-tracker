@@ -1,8 +1,15 @@
 import React from 'react';
-import { Menu, Dropdown, Button, Input, InputNumber, Card, Col, Row, List, Select} from 'antd';
+import { Menu, Dropdown, Button, Input, InputNumber, Col, Row, List, Select, Upload, Icon, message} from 'antd';
 const { TextArea } = Input;
 import 'antd/dist/antd.css';
 import InfiniteScroll from 'react-infinite-scroller';
+
+
+function getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
 
 export default class ShowImage extends React.Component {
 
@@ -17,6 +24,7 @@ export default class ShowImage extends React.Component {
             commandNickname : "",
             favoriteCommandList : [],
             companies : [],
+            csvFile : []
         }
 
         this.selectCompany = this.selectCompany.bind(this);
@@ -31,7 +39,28 @@ export default class ShowImage extends React.Component {
         this.getFavoriteCommandsList = this.getFavoriteCommandsList.bind(this);
         this.selectCompanies = this.selectCompanies.bind(this);
         this.onChangeSelectCompanies = this.onChangeSelectCompanies.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.beforeUpload = this.beforeUpload.bind(this);
     }
+
+    beforeUpload(file) {
+        const isJpgOrPng = file.type === 'text/csv';
+        if (!isJpgOrPng) {
+          message.error('You can only upload csv file!');
+          return;
+        }
+        const reader = new FileReader();    
+        reader.onload = e => {
+            console.log(e.target.result);
+            this.setState({ csvFile : e.target.result})
+        };
+        reader.readAsText(file);
+    
+        // Prevent upload
+        message.success('csv file uploaded!');
+        // this.setState({ csvFile : reader})
+        return isJpgOrPng;
+      }
 
     selectCompany(e, stockSource) {
         this.setState({ selectedCompany : stockSource})
@@ -63,6 +92,22 @@ export default class ShowImage extends React.Component {
         this.setState({companies : value})
         console.log(this.state.companies);
     }
+
+    handleChange(info){
+        if (info.file.status === 'uploading') {
+          this.setState({ loading: true });
+          return;
+        }
+        if (info.file.status === 'done') {
+          // Get this url from response in real world.
+          getBase64(info.file.originFileObj, imageUrl =>
+            this.setState({
+              imageUrl,
+              loading: false,
+            }),
+          );
+        }
+      };
     
     selectCompanies(){
         return(
@@ -198,7 +243,8 @@ export default class ShowImage extends React.Component {
                {
                    company: this.state.companies,
                    sql : this.state.sql,
-                   period : this.state.period
+                   period : this.state.period,
+                   csvFile : this.state.csvFile
                 }
             )
         }).then(res => res.json()).then(res => {
@@ -210,7 +256,13 @@ export default class ShowImage extends React.Component {
     }
 
     render(){
-
+        const uploadButton = (
+            <div>
+              <Icon type={this.state.loading ? 'loading' : 'plus'} />
+              <div className="ant-upload-text">Upload</div>
+            </div>
+          );
+        const { imageUrl } = this.state;
         const menu = (
             <Menu>
               <Menu.Item>
@@ -332,6 +384,12 @@ export default class ShowImage extends React.Component {
                         period : { this.state.period }
                         </Col>
                     </Row>
+                    <Row>
+                        <Col span={1}></Col>
+                        <Col>
+                        csvfile : { this.state.csvFile }
+                        </Col>
+                    </Row>
                 </Row>
 
                 <div style={{ margin: '24px 0' }} />
@@ -340,9 +398,37 @@ export default class ShowImage extends React.Component {
                     <Col span={2}>
                         <Button type="primary" onClick={this.postToRetrieveStockInfo} >submit</Button>
                     </Col>
+                    
+                    <Col span={1}></Col>
+                    <Col span={4}>
+                        <Button type="primary" onClick={this.postSaveCommnad}>save the command</Button>
+                    </Col>
+
                     <Col span={1}></Col>
                     <Col span={2}>
-                        <Button type="primary" onClick={this.postSaveCommnad}>save the command</Button>
+                        <Upload
+                            name="avatar"
+                            accept=".txt, .csv"
+                            listType="picture-card"
+                            className="avatar-uploader"
+                            showUploadList={false}
+                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                            // beforeUpload={file => {
+                            //     const reader = new FileReader();
+                        
+                            //     reader.onload = e => {
+                            //         console.log(e.target.result);
+                            //     };
+                            //     reader.readAsText(file);
+                        
+                            //     // Prevent upload
+                            //     return false;
+                            // }}
+                            beforeUpload = {this.beforeUpload}
+                            onChange={this.handleChange}
+                        >
+                            {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                        </Upload>
                     </Col>
                 </Row>
 
