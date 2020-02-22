@@ -209,14 +209,14 @@ export default class ShowImage extends React.Component {
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
             },
-           body: JSON.stringify(
+            body: JSON.stringify(
                {
                    name : this.state.commandNickname,
                    company: this.state.companies,
                    sql : this.state.sql,
                    previous_period : this.state.period
                 }
-            )
+            ),
         }).then(res => res.json()).then(res => {
             console.log(res);
             console.log(JSON.stringify(res));
@@ -226,8 +226,10 @@ export default class ShowImage extends React.Component {
         })
     }
 
-    postToRetrieveStockInfo(e) {
+    postToRetrieveStockInfo(e, saveCSV) {
         console.log(e.target.value);
+        console.log(saveCSV);
+        
         console.log("clicked");
         console.log(this.state.selectedCompany)
         console.log(this.state.sql)
@@ -244,7 +246,8 @@ export default class ShowImage extends React.Component {
                    company: this.state.companies,
                    sql : this.state.sql,
                    period : this.state.period,
-                   csvFile : this.state.csvFile
+                   csvFile : this.state.csvFile,
+                   saveCSV : saveCSV
                 }
             )
         }).then(res => res.json()).then(res => {
@@ -396,37 +399,34 @@ export default class ShowImage extends React.Component {
                 <Row>
                     <Col span={1}></Col>
                     <Col span={2}>
-                        <Button type="primary" onClick={this.postToRetrieveStockInfo} >submit</Button>
+                        <Button type="primary" onClick={(e) => this.postToRetrieveStockInfo(e, false)} >submit</Button>
                     </Col>
                     
                     <Col span={1}></Col>
                     <Col span={4}>
                         <Button type="primary" onClick={this.postSaveCommnad}>save the command</Button>
                     </Col>
-
+                    
                     <Col span={1}></Col>
-                    <Col span={2}>
-                        <Upload
-                            name="avatar"
-                            accept=".txt, .csv"
-                            listType="picture-card"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                            // beforeUpload={file => {
-                            //     const reader = new FileReader();
-                        
-                            //     reader.onload = e => {
-                            //         console.log(e.target.result);
-                            //     };
-                            //     reader.readAsText(file);
-                        
-                            //     // Prevent upload
-                            //     return false;
-                            // }}
-                            beforeUpload = {this.beforeUpload}
-                            onChange={this.handleChange}
-                        >
+                    <Col span={4}>
+                        <Button type="primary" onClick={(e) => this.postToRetrieveStockInfo(e, true)}>download csv</Button>
+                    </Col>
+                </Row>
+
+                <div style={{ margin: '24px 0' }} />
+                <Row>
+                    <Col span={1}></Col>
+                        <Col span={2}>
+                            <Upload
+                                name="avatar"
+                                accept=".txt, .csv"
+                                listType="picture-card"
+                                className="avatar-uploader"
+                                showUploadList={false}
+                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                beforeUpload = {this.beforeUpload}
+                                onChange={this.handleChange}
+                            >
                             {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                         </Upload>
                     </Col>

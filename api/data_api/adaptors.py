@@ -1,4 +1,5 @@
 import datetime as dt
+import pandas as pd
 
 def stock_info_adaptor(request):
     """
@@ -17,20 +18,22 @@ def stock_info_adaptor(request):
 
 def convert_str_to_list_csv(csv):
     """
-        convert string data to list to adapt panda data frame
+        convert string data to panda data frame
     """
     if not csv:
         return None
     csv_data = csv.replace("'","").split("\n")
-    return [data.split(",") for data in csv_data]
-
+    formatted_data = [data.split(",") for data in csv_data]
+    col = formatted_data[0] # list of names for each value
+    values = formatted_data[1:-1] # remove the last element in the list, which is empty
+    return pd.DataFrame(values, columns=col)
 
 def stock_data_result_adaptor(status, data = "", message = ""):
     """
         adapt return value to front
     """
     return{
-        "data" : data,
+        "data" : str(data),
         "status" : status,
         "message" : message
     }
