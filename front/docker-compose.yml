@@ -1,0 +1,11 @@
+version: '3'
+
+services: 
+    web:
+        build: .
+        command: npm start
+        image : data-tracker-front
+        volumes: 
+            - .:/front/
+        ports: 
+            - "5000:5000"
