@@ -31,16 +31,6 @@ class DataApi(APIView):
         self.result = ""
 
     def post(self, request, **args):
-        print("##")
-        print(request.data.get("saveCSV"))
-        print(self.result)
-        print(type(self.result))
-        print("##")
-        # if request.data.get("saveCSV"):
-        #     res = self.save_csv()
-        #     return Response(data = "csv saved!", status=res)
-
-
         result = self.get_stock_data(request)
         if result.get("status") == CONST.SUCCESS:
             return Response(data = result.get("data"), status=status.HTTP_200_OK)
@@ -51,12 +41,11 @@ class DataApi(APIView):
             data = FavoriteCommand.objects.all()
             serializer = SaveFavoriteCommandSerializer(data, many=True)
 
-            print(serializer.data)
             for data in serializer.data:
                 company = data.get("company")
                 data["company"] = company.replace("[", "").replace("]", "").replace("'", "").split(", ")
 
-            return Response(data = serializer.data)
+            return Response(data = serializer.data, status=status.HTTP_200_OK)
         except:
             return Response(data = MESSAGES.FAIL_DATA_NOT_FETCHED, status=status.HTTP_400_BAD_REQUEST)
 
@@ -80,7 +69,6 @@ class DataApi(APIView):
         return df
 
     def get_df(self, data):
-
         dfs = []
         for company in data.get("company"):
             df = web.DataReader(
@@ -93,13 +81,12 @@ class DataApi(APIView):
             self.add_new_row(df, items)
             dfs.append(df)
         df = pd.concat(dfs)
-        print(df.head())
         return df
 
     def get_stock_data(self, request):
         style.use('ggplot')
         data = stock_info_adaptor(request)
-        print(data)
+        #print(data)
 
         sql = data.get("sql")
         df = self.get_df(data)

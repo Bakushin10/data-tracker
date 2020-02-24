@@ -215,6 +215,7 @@ export default class ShowImage extends React.Component {
             message.success('Favorite command loaded!');
             this.setState({commandToDelete : ""})
         }).catch(err => {
+            message.error('something went wrong');
             console.log("save not saved");
             console.log(err);
         })
@@ -242,18 +243,11 @@ export default class ShowImage extends React.Component {
             message.success('Favorite command saved!')
         }).catch(err => {
             message.error('something went wrong. Favorite command not saved!')
-            console.log("save not saved");
             console.log(err);
         })
     }
 
     postToRetrieveStockInfo(e, saveCSV) {
-        console.log(e.target.value);
-        console.log(saveCSV);
-        
-        console.log("clicked");
-        console.log(this.state.selectedCompany)
-        console.log(this.state.sql)
         fetch('http://localhost:8000/data/', {
             method: "POST",
             mode: "cors",
@@ -272,10 +266,9 @@ export default class ShowImage extends React.Component {
                 }
             )
         }).then(res => res.json()).then(res => {
-            console.log(res);
-            console.log(JSON.stringify(res));
+            message.success('Data retrieved!')
         }).catch(err => {
-            console.log(err);
+            message.error('Please check your sql!')
         })
     }
 
