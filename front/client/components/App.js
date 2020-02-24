@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import Add from './Add'
 
 export default class App extends React.Component {
   
@@ -27,7 +26,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <Add selectedMonth={this.state.selectedMonth} selectedYear={this.state.selectedYear} />
+        {/* <Add selectedMonth={this.state.selectedMonth} selectedYear={this.state.selectedYear} /> */}
         {/* <table>
           <thead>
             <tr>
