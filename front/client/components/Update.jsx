@@ -24,7 +24,8 @@ export default class ShowImage extends React.Component {
             commandNickname : "",
             favoriteCommandList : [],
             companies : [],
-            csvFile : []
+            csvFile : [],
+            commandToDelete : ""
         }
 
         this.selectCompany = this.selectCompany.bind(this);
@@ -41,6 +42,8 @@ export default class ShowImage extends React.Component {
         this.onChangeSelectCompanies = this.onChangeSelectCompanies.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.beforeUpload = this.beforeUpload.bind(this);
+        this.deleteSaveCommnad = this.deleteSaveCommnad.bind(this);
+        this.fetchSavedCommand = this.fetchSavedCommand.bind(this);
     }
 
     beforeUpload(file) {
@@ -86,6 +89,7 @@ export default class ShowImage extends React.Component {
         this.setState({sql : command.sql})
         this.setState({period : command.previous_period})
         this.setState({companies : command.company})
+        this.setState({commandToDelete : command.name})
     }
     
     onChangeSelectCompanies(value){
@@ -128,30 +132,6 @@ export default class ShowImage extends React.Component {
         )
       }
 
-    // getFavoriteCommands(){
-    //     return(
-    //         <div>{
-    //             this.state.favoriteCommandList.map( command =>(
-    //                 <Row type="flex">
-    //                 <Col span={1}></Col>
-    //                 <Col>
-    //                     <Card
-    //                         title= {command.name}
-    //                         style={{ width: 300 }}
-    //                         onClick={e => this.onClickSelectCommand(e, command)}
-    //                     >
-    //                         <p>sql : {command.sql} </p>
-    //                         <p>company : {command.company}</p>
-    //                         <p>previous period : {command.previous_period} </p>
-    //                     </Card>
-    //                 </Col>
-    //             </Row>
-    //             ))
-    //             }
-    //         </div>
-    //     )
-    // }
-
     getFavoriteCommandsList(){
         return(
             <div>{
@@ -182,7 +162,23 @@ export default class ShowImage extends React.Component {
         )
     }
 
+    getDeleteSaveCommnad(){
+        if (this.state.commandToDelete != ""){
+            return(
+                <Button type="danger" onClick = {this.deleteSaveCommnad}>Delete</Button>
+            )
+        }else{
+            return(
+                <Button type="danger" disabled = "true">Delete</Button>
+            )
+        }
+    }
+
     componentDidMount(){
+        this.fetchSavedCommand()
+    }
+
+    fetchSavedCommand(){
         fetch('http://localhost:8000/data/', {
             method: "GET",
             mode: "cors",
@@ -196,6 +192,30 @@ export default class ShowImage extends React.Component {
             //this.getFavoriteCommands()
         }).catch(err => {
             console.log("data not fetched!");
+            console.log(err);
+        })
+    }
+
+    deleteSaveCommnad(){
+        fetch('http://localhost:8000/data/delete', {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify(
+               {
+                   name : this.state.commandToDelete,
+                }
+            ),
+        }).then(res => res.json()).then(res => {
+            this.fetchSavedCommand()
+            message.success('Favorite command loaded!');
+            this.setState({commandToDelete : ""})
+        }).catch(err => {
+            console.log("save not saved");
             console.log(err);
         })
     }
@@ -218,9 +238,10 @@ export default class ShowImage extends React.Component {
                 }
             ),
         }).then(res => res.json()).then(res => {
-            console.log(res);
-            console.log(JSON.stringify(res));
+            this.fetchSavedCommand()
+            message.success('Favorite command saved!')
         }).catch(err => {
+            message.error('something went wrong. Favorite command not saved!')
             console.log("save not saved");
             console.log(err);
         })
@@ -309,12 +330,6 @@ export default class ShowImage extends React.Component {
         return(
             <div>
                 <div>
-                    {/* <Row>
-                        <Col span={1}></Col>
-                        <Dropdown overlay = {menu} title="Data Source">
-                            <Button> select  </Button>
-                        </Dropdown>
-                    </Row> */}
                     <Row>
                         <Col span={1}></Col>
                         <Col span={10}>
@@ -436,8 +451,17 @@ export default class ShowImage extends React.Component {
                 {/* <div>
                     {  this.getFavoriteCommands()}
                 </div> */}
+                <Row>
+                    <Col span={1}></Col>
+                    <Col span={2}>
+                        {this.getDeleteSaveCommnad()}
+                    </Col>
+                    <Col span={8}>
+                        {this.state.commandToDelete}
+                    </Col>
+                </Row>
                 <div>
-                    {  this.getFavoriteCommandsList()}
+                    {this.getFavoriteCommandsList()}
                 </div>
             </div>
         </div>

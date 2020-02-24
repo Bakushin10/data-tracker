@@ -1,5 +1,5 @@
 class CONST:
-    PATH_TO_CSV = "/home/shin/Desktop/programming/python/data-tracker/api/data_tracker/utils/csv/"
+    PATH_TO_CSV = "data-tracker/api/data_tracker/utils/csv/"
 
     SUCCESS = "SUCCESS"
     FAIL = "FAIL"

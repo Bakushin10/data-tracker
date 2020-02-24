@@ -135,4 +135,11 @@ class SaveCommand(APIView):
             return Response(data = MESSAGES.SUCCESS_DATA_SAVED, status=status.HTTP_200_OK)
         return Response(data = MESSAGES.FAIL_DATA_NOT_SAVED, status=status.HTTP_400_BAD_REQUEST)
     
-    
+
+class DeleteCommand(APIView):
+
+    def post(self, request):
+        name = request.data.get("name")
+        delete = FavoriteCommand.objects.filter(name = name).delete()
+        print(delete)
+        return Response(data = "{} deleted".format(name), status = status.HTTP_200_OK)
