@@ -62,13 +62,14 @@ class DataApi(APIView):
 
     def save_csv(self):
         date_dir, filename = str(dt.datetime.now(JST)).split(" ")
-        path = PATH_TO_CSV + "/" + date_dir + "/"
+        path = PATH_TO_CSV + date_dir + "/"
         filename = path + filename + ".csv"
         print("--------")
         print(self.result)
         print("--------")
         if not os.path.exists(path):
             os.makedirs(path)
+        print(filename)
         self.result.to_csv(filename)
         return status.HTTP_200_OK
 
