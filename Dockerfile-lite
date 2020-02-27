@@ -1,0 +1,20 @@
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get install -y \
+    software-properties-common
+RUN add-apt-repository universe
+RUN apt-get install -y \
+    python3.6 \
+    python3-pip
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /api
+WORKDIR /api
+
+COPY . /api/
+RUN pip3 install pipenv
+RUN ls
+RUN pipenv sync
