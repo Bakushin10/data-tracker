@@ -53,9 +53,6 @@ class DataApi(APIView):
         date_dir, filename = str(dt.datetime.now(JST)).split(" ")
         path = PATH_TO_CSV + date_dir + "/"
         filename = path + filename + ".csv"
-        print("--------")
-        print(self.result)
-        print("--------")
         if not os.path.exists(path):
             os.makedirs(path)
         print(filename)
@@ -85,10 +82,8 @@ class DataApi(APIView):
 
     def get_stock_data(self, request):
         style.use('ggplot')
-        #data = stock_info_adaptor(request)
         stock_info_adaptor = Stock_info_adaptor_class()
         data = stock_info_adaptor.adapt(request)
-        #print(data)
 
         sql = data.get("sql")
         df = self.get_df(data)
@@ -96,22 +91,13 @@ class DataApi(APIView):
         
         self.result = sqldf(sql, locals())
         print("*** after sql ***")
-        print(type(self.result))
         print(self.result)
-        #self.result.to_csv(PATH_TO_CSV + "file.csv")
 
         if request.data.get("saveCSV"):
             self.save_csv()
-            #self.result.to_csv(PATH_TO_CSV + "/file.csv")
         
         sdf = self.result.head(10).to_json(orient='split')
-        print(type(sdf))
-        print(sdf)
-        #return Response(data = "csv saved!", status=res)
         return stock_data_result_adaptor(status = CONST.SUCCESS, data = sdf)
-        # except:
-        #     return stock_data_result_adaptor(status = CONST.FAIL, message = MESSAGES.SQL_ERROR)
-    
 
 class SaveCommand(APIView):
 

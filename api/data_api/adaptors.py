@@ -53,22 +53,6 @@ class Input_adaptor_class(Adaptor):
         }
 
 
-def stock_info_adaptor(request):
-    """
-        adapt the input from front-end to backend
-    """
-    today = dt.date.today()
-    previous = request.data.get("period", 10)
-    return {
-        'data_source' : "yahoo",
-        'company' : request.data.get("company"),
-        'sql' : request.data.get("sql"),
-        'start' : today - dt.timedelta(previous),
-        'end' : today,
-        'csvFile' : convert_str_to_list_csv(request.data.get("csvFile"))
-    }
-
-
 def convert_str_to_list_csv(csv):
     """
         convert string data to panda data frame
