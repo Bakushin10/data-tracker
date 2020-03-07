@@ -1,5 +1,57 @@
 import datetime as dt
 import pandas as pd
+from abc import ABC, abstractmethod
+
+class Adaptor(ABC):
+    @abstractmethod
+    def adapt(self, request):
+        pass
+    
+    @abstractmethod
+    def set_adaptee(self):
+        pass
+
+class Stock_info_adaptor_class(Adaptor):
+
+    def set_adaptee(self, request):
+        today = dt.date.today()
+        previous = request.data.get("period", 10)
+
+        self.data_source = "yahoo"
+        self.company = request.data.get("company")
+        self.sql = request.data.get("sql")
+        self.start = today - dt.timedelta(previous)
+        self.end = today
+        self.csvFile = convert_str_to_list_csv(request.data.get("csvFile"))
+
+    def adapt(self, request):
+
+        self.set_adaptee(request)
+        return {
+            'data_source' : self.data_source,
+            'company' : self.company,
+            'sql' : self.sql,
+            'start' : self.start,
+            'end' : self.end,
+            'csvFile' : self.csvFile
+        }
+
+class Input_adaptor_class(Adaptor):
+
+    def set_adaptee(self, request):
+        self.name = request.get('name')
+        self.company = str(request.get('company'))
+        self.sql = request.get("sql")
+        self.previous_period = request.get('previous_period')
+
+    def adapt(self, request):
+        return {
+            'name': self.name,
+            'company': self.company,
+            'sql': self.sql,
+            'previous_period': self.previous_period
+        }
+
 
 def stock_info_adaptor(request):
     """
@@ -16,6 +68,7 @@ def stock_info_adaptor(request):
         'csvFile' : convert_str_to_list_csv(request.data.get("csvFile"))
     }
 
+
 def convert_str_to_list_csv(csv):
     """
         convert string data to panda data frame
@@ -27,6 +80,7 @@ def convert_str_to_list_csv(csv):
     col = formatted_data[0] # list of names for each value
     values = formatted_data[1:-1] # remove the last element in the list, which is empty
     return pd.DataFrame(values, columns=col)
+
 
 def stock_data_result_adaptor(status, data = "", message = ""):
     """

@@ -85,7 +85,9 @@ class DataApi(APIView):
 
     def get_stock_data(self, request):
         style.use('ggplot')
-        data = stock_info_adaptor(request)
+        #data = stock_info_adaptor(request)
+        stock_info_adaptor = Stock_info_adaptor_class()
+        data = stock_info_adaptor.adapt(request)
         #print(data)
 
         sql = data.get("sql")
@@ -116,6 +118,10 @@ class SaveCommand(APIView):
     def post(self, request):
         print(request.data)
         data = input_adaptor(request.data)
+        
+        # input_adaptor = Input_adaptor_class()
+        # input_adaptor.adapt(request)
+
         serializer = SaveFavoriteCommandSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
