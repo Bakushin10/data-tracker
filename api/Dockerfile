@@ -6,5 +6,4 @@ WORKDIR /api
 
 COPY . /api/
 RUN pip install pipenv
-RUN ls
 RUN pipenv sync
