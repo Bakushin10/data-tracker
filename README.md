@@ -1,5 +1,5 @@
 
-# data-tracker
+# real-time stock data tracker
 
 ### 3 steps easy set up 
     git clone git@github.com:Bakushin10/data-tracker.git
