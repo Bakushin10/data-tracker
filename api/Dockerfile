@@ -3,12 +3,13 @@ FROM python:3.6
 RUN apt-get update && apt-get install -y \
 	nano \
 	vim \
-	nano
+	curl
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /api
 WORKDIR /api
 
+# copy everything in current dir to /api
 COPY . /api/
 
 RUN pip install	 \
