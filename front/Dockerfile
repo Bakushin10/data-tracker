@@ -10,9 +10,10 @@ RUN mkdir app
 WORKDIR /app
 RUN mkdir client && mkdir server
 
-COPY /client client/
-COPY /server server/
-COPY ["package.json", "package-lock.json", "webpack.config.js", "yarn.lock", "./"]
+COPY . /app/
+#COPY /client client/
+#COPY /server server/
+#COPY ["package.json", "package-lock.json", "webpack.config.js", "yarn.lock", "./"]
 
 RUN npm install \
 	--silent \
