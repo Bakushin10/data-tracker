@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenVPN Robust And Highly Flexible Tunneling Application On %I
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=
+User=
+Group=
+EnviromentFile=
+WorkingDirectory=/api
+ExecStart=/root/.local/share/virtualenvs/api-ORERwo9D/bin/gunicorn --config /etc/lessions/gunicorn.conf.py config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
