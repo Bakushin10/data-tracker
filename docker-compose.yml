@@ -1,6 +1,15 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/api
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - api
   api:
     # docker run -d -p 8000:8000 data-tracker-backend pipenv run start 
     build: ./api
@@ -8,8 +17,8 @@ services:
     image : data-tracker-backend
     volumes:
       - ./api:/api
-    ports:
-      - "8000:8000"
+    expose: 
+      - "8000"
   
   front:
     build: ./front
