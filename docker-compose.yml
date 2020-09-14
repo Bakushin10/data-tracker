@@ -17,6 +17,8 @@ services:
     image : data-tracker-backend
     volumes:
       - ./api:/api
+      # - ./config/api/etc:./etc
+      # - ./config/api/systemd/:/etc/systemd/system/
     expose: 
       - "8000"
   
