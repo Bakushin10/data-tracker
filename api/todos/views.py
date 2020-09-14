@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .serializers import StuffSerializer
 import json
 import requests
+from django.core.cache import cache
 
 
 class StuffViewSet(APIView):
@@ -22,9 +23,17 @@ class StuffViewSet(APIView):
         return Response(data = "data not saved", status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        snippets = Stuff.objects.all()
-        serializer = StuffSerializer(snippets, many=True)
-        print("GET")
-        print(serializer.data)
-        # , content_type = "application/json"
-        return Response(data = json.dumps(serializer.data))
+        print("redis")
+        cache.set("foo", "bar", timeout = 1000)
+        print("value set")
+        foo = cache.get("foo")
+        print(foo)
+        # snippets = Stuff.objects.all()
+        # serializer = StuffSerializer(snippets, many=True)
+        # print("GET")
+        # print(serializer.data)
+        # # , content_type = "application/json"
+        # return Response(data = json.dumps(serializer.data))
+    
+
+    
