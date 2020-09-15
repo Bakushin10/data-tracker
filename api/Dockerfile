@@ -3,9 +3,11 @@ FROM python:3.6
 RUN apt-get update && apt-get install -y \
 	nano \
 	vim \
-	curl
+	curl \
+	redis-tools \
+	redis-server
 
-# create comnfig files
+# create config files
 WORKDIR /etc/systemd
 RUN mkdir lessons
 COPY config/etc/systemd/ system/

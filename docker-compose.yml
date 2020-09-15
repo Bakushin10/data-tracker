@@ -3,6 +3,7 @@ version: '3'
 services:
   nginx:
     image: nginx:latest
+    container_name: ${PROJECT_NAME}-nginx
     ports:
       - 8000:8000
     volumes:
@@ -10,20 +11,32 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
     depends_on:
       - api
+      - redis-server
   api:
     # docker run -d -p 8000:8000 data-tracker-backend pipenv run start 
-    build: ./api
+    build:
+      context: ./api
     command: pipenv run start
     image : data-tracker-backend
+    container_name: ${PROJECT_NAME}-python-api
     volumes:
       - ./api:/api
       # - ./config/api/etc:./etc
       # - ./config/api/systemd/:/etc/systemd/system/
     expose: 
       - "8000"
-  
+
+  redis-server:
+    build:
+      context: ./redis
+    image: "redis:alpine"
+    container_name: ${PROJECT_NAME}-redis
+    ports:
+      - "6379:6379"
+
   front:
-    build: ./front
+    build:
+      context: ./front
     command: npm start
     image : data-tracker-front
     volumes:
