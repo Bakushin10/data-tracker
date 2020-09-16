@@ -11,7 +11,7 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
     depends_on:
       - api
-      - redis-server
+
   api:
     # docker run -d -p 8000:8000 data-tracker-backend pipenv run start 
     build:
@@ -23,10 +23,12 @@ services:
       - ./api:/api
       # - ./config/api/etc:./etc
       # - ./config/api/systemd/:/etc/systemd/system/
+    depends_on:
+      - redis-service
     expose: 
       - "8000"
 
-  redis-server:
+  redis-service:
     build:
       context: ./redis
     image: "redis:alpine"

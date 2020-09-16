@@ -133,10 +133,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CACHES = {
+
+# default connection setting is
+#   "LOCATION": "redis://127.0.0.1:6379/1",
+#
+# connecting with redis within the same docker network
+# 'docker inspect data-tracking-project-redis' to get network info
+# 
+# use 
+# "LOCATION": "redis://redis-service:6379/1" (since its the hostname defined in docker-compose file)
+# or 
+# "LOCATION": "redis://172.18.0.3:6379/1" also works
+
+CACHES = {    
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis-service:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },

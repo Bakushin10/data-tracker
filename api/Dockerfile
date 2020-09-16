@@ -3,9 +3,7 @@ FROM python:3.6
 RUN apt-get update && apt-get install -y \
 	nano \
 	vim \
-	curl \
-	redis-tools \
-	redis-server
+	curl
 
 # create config files
 WORKDIR /etc/systemd
@@ -28,9 +26,10 @@ RUN pip install \
 RUN python3 -m venv data-tracker && \
 	. data-tracker/bin/activate
 
-# create venv and install python dependency from Pipfile
-#
-# /root/.local/share/virtualenvs/api-ORERwo9D/lib/python3.6/site-packages
+
+# 	1. create venv in 
+# 		/root/.local/share/virtualenvs/api-ORERwo9D/lib/python3.6/site-packages
+# 	2. create pipfile.lock out of the packages in pipfile and install packages
 #
 RUN pipenv update
 

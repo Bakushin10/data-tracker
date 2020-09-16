@@ -28,11 +28,12 @@ class StuffViewSet(APIView):
         setting up the value in redis
         """
         print("redis")
-        if "foo" in cache:
-            print("foo in redis")
-            foo = cache.get("foo")
+        key = "key"
+        if key in cache:
+            print(f"{key} in redis")
+            foo = cache.get(key)
             return Response(data = foo, status = status.HTTP_200_OK)
-        print("foo not in redis")
+        print(f"{key} not in redis")
         bar = {
             "info" : {
                 "age" : 20,
@@ -45,8 +46,8 @@ class StuffViewSet(APIView):
                 "3" : "butters"
                 }
             }
-        cache.set("foo", bar, timeout = 1000)
-        message = f"value {bar} set in redis"
+        cache.set(key, bar, timeout = 1000)
+        message = f"value {key} set in redis"
         return Response(data = message, status = status.HTTP_200_OK)
         # snippets = Stuff.objects.all()
         # serializer = StuffSerializer(snippets, many=True)
