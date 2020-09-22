@@ -45,7 +45,7 @@ pandasql = { version = "==0.7.3", name = "pypi"}
 
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 
 [scripts]
